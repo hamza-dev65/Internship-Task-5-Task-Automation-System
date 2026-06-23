@@ -30,6 +30,11 @@ export default function Navbar() {
             </Link>
           ))}
           {isAdmin && <ReminderBell />}
+          {isAdmin && (
+            <Link to="/" className="text-sm text-indigo-200 hover:text-white transition border-l border-indigo-500 pl-4">
+              Logout
+            </Link>
+          )}
         </div>
       </div>
     </nav>
