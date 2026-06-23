@@ -1,13 +1,17 @@
-export default function ProgressBar({ value, label }) {
-  const pct = Math.min(Math.max(value, 0), 100);
+export default function ProgressBar({ value }) {
+  const pct = Math.min(Math.max(value || 0, 0), 100);
+
   return (
-    <div>
-      {label && <div className="text-sm text-gray-600 mb-1">{label}</div>}
-      <div className="w-full bg-gray-200 rounded-full h-2.5">
-        <div
-          className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500"
-          style={{ width: `${pct}%` }}
-        />
+    <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+      <div
+        className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 transition-all duration-700 ease-out relative"
+        style={{ width: `${pct}%` }}
+      >
+        {pct >= 25 && (
+          <span className="absolute inset-0 flex items-center justify-end pr-2 text-[10px] font-bold text-white leading-none">
+            {pct}%
+          </span>
+        )}
       </div>
     </div>
   );
