@@ -35,6 +35,12 @@ router.patch('/:id/status', async (req, res) => {
   res.json(task);
 });
 
+router.delete('/:id', async (req, res) => {
+  await Reminder.deleteMany({ task: req.params.id });
+  await Task.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Deleted' });
+});
+
 router.get('/stats', async (req, res) => {
   const total = await Task.countDocuments();
   const completed = await Task.countDocuments({ status: 'completed' });

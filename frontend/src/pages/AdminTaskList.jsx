@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getTasks, updateTaskStatus } from '../api';
+import { getTasks, updateTaskStatus, deleteTask } from '../api';
 import StatusBadge from '../components/StatusBadge';
 
-const statuses = ['pending', 'in-progress', 'completed'];
+const statuses = ['scheduled', 'pending', 'in-progress', 'completed'];
 
 export default function AdminTaskList() {
   const [tasks, setTasks] = useState([]);
@@ -21,17 +21,25 @@ export default function AdminTaskList() {
   useEffect(() => { fetchTasks(); }, [filter]);
 
   const handleStatus = async (id, status) => {
-    const next = statuses[(statuses.indexOf(status) + 1) % statuses.length];
+    const idx = statuses.indexOf(status);
+    if (idx === -1) return;
+    const next = statuses[(idx + 1) % statuses.length];
     const updated = await updateTaskStatus(id, next);
     setTasks(prev => prev.map(t => t._id === id ? updated : t));
+  };
+
+  const handleDelete = async (id, title) => {
+    if (!window.confirm(`Delete task "${title}"?`)) return;
+    await deleteTask(id);
+    setTasks(prev => prev.filter(t => t._id !== id));
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">All Tasks</h1>
 
-      <div className="flex gap-2 mb-4">
-        {['', 'pending', 'in-progress', 'completed'].map(s => (
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {['', ...statuses].map(s => (
           <button
             key={s}
             onClick={() => setFilter(s)}
@@ -56,6 +64,7 @@ export default function AdminTaskList() {
                 <th className="text-left p-3">Due</th>
                 <th className="text-left p-3">Priority</th>
                 <th className="text-left p-3">Status</th>
+                <th className="text-right p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +81,14 @@ export default function AdminTaskList() {
                   <td className="p-3">
                     <button onClick={() => handleStatus(t._id, t.status)} className="cursor-pointer">
                       <StatusBadge status={t.status} />
+                    </button>
+                  </td>
+                  <td className="p-3 text-right">
+                    <button
+                      onClick={() => handleDelete(t._id, t.title)}
+                      className="text-red-600 hover:text-red-800 text-xs font-medium"
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>

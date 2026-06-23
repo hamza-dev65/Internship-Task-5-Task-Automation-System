@@ -42,6 +42,11 @@ export default function InternDashboard() {
     setTasks(prev => prev.map(t => t._id === taskId ? updated : t));
   };
 
+  const handleSubmit = async (taskId) => {
+    const updated = await updateTaskStatus(taskId, 'completed');
+    setTasks(prev => prev.map(t => t._id === taskId ? updated : t));
+  };
+
   const handleDismissReminder = async (reminderId) => {
     await markReminderRead(reminderId);
     setReminders(prev => prev.map(r => r._id === reminderId ? { ...r, read: true } : r));
@@ -107,6 +112,7 @@ export default function InternDashboard() {
                 <th className="text-left p-3">Due</th>
                 <th className="text-left p-3">Priority</th>
                 <th className="text-left p-3">Status</th>
+                <th className="text-center p-3">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -123,6 +129,20 @@ export default function InternDashboard() {
                     <button onClick={() => handleStatus(t._id, t.status)} className="cursor-pointer" disabled={t.status === 'completed'}>
                       <StatusBadge status={t.status} />
                     </button>
+                  </td>
+                  <td className="p-3 text-center">
+                    {t.status === 'completed' ? (
+                      <span className="text-green-600 font-bold text-lg">✓</span>
+                    ) : t.status === 'scheduled' ? (
+                      <span className="text-gray-300">—</span>
+                    ) : (
+                      <button
+                        onClick={() => handleSubmit(t._id)}
+                        className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-700 transition"
+                      >
+                        Submit
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
