@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTask, getInterns } from '../api';
 
-export default function TaskForm() {
+export default function AdminTaskForm() {
   const navigate = useNavigate();
   const [interns, setInterns] = useState([]);
   const [form, setForm] = useState({ title: '', description: '', dueDate: '', priority: 'medium', assignedTo: '' });
@@ -14,7 +14,7 @@ export default function TaskForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createTask({ ...form, dueDate: new Date(form.dueDate) });
-    navigate('/tasks');
+    navigate('/admin/tasks');
   };
 
   return (

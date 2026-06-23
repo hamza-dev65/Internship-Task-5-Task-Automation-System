@@ -4,7 +4,7 @@ import StatusBadge from '../components/StatusBadge';
 
 const statuses = ['pending', 'in-progress', 'completed'];
 
-export default function TaskList() {
+export default function AdminTaskList() {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function TaskList() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Tasks</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">All Tasks</h1>
 
       <div className="flex gap-2 mb-4">
         {['', 'pending', 'in-progress', 'completed'].map(s => (

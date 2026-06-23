@@ -7,6 +7,11 @@ router.get('/', async (req, res) => {
   res.json(interns);
 });
 
+router.get('/:id', async (req, res) => {
+  const intern = await Intern.findById(req.params.id);
+  res.json(intern);
+});
+
 router.post('/', async (req, res) => {
   const intern = await Intern.create(req.body);
   res.status(201).json(intern);

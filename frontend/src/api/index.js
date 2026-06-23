@@ -3,6 +3,7 @@ import axios from 'axios';
 const api = axios.create({ baseURL: '/api' });
 
 export const getInterns = () => api.get('/interns').then(r => r.data);
+export const getIntern = (id) => api.get(`/interns/${id}`).then(r => r.data);
 export const createIntern = (data) => api.post('/interns', data).then(r => r.data);
 export const updateIntern = (id, data) => api.put(`/interns/${id}`, data).then(r => r.data);
 export const deleteIntern = (id) => api.delete(`/interns/${id}`).then(r => r.data);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getInterns, createIntern, deleteIntern } from '../api';
 
-export default function InternList() {
+export default function AdminInternList() {
   const [interns, setInterns] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -28,7 +28,7 @@ export default function InternList() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Interns</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Manage Interns</h1>
 
       <form onSubmit={handleAdd} className="bg-white rounded-xl shadow p-5 mb-6 flex flex-wrap gap-3 items-end">
         <div className="flex-1 min-w-[150px]">

@@ -3,7 +3,7 @@ import { getStats } from '../api';
 import StatsCard from '../components/StatsCard';
 import ProgressBar from '../components/ProgressBar';
 
-export default function Dashboard() {
+export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
 
   const fetchStats = async () => {
@@ -18,7 +18,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatsCard label="Total Tasks" value={stats.total} />
