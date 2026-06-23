@@ -5,8 +5,9 @@ const taskSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   dueDate: { type: Date, required: true },
   priority: { type: String, enum: ['low', 'medium', 'high'], default: 'medium' },
-  status: { type: String, enum: ['pending', 'in-progress', 'completed'], default: 'pending' },
+  status: { type: String, enum: ['scheduled', 'pending', 'in-progress', 'completed'], default: 'pending' },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Intern', required: true },
+  scheduledAt: { type: Date, default: null },
   completedAt: { type: Date, default: null },
 }, { timestamps: true });
 

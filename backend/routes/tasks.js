@@ -12,7 +12,11 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const task = await Task.create(req.body);
+  const data = { ...req.body };
+  if (data.scheduledAt && new Date(data.scheduledAt) > new Date()) {
+    data.status = 'scheduled';
+  }
+  const task = await Task.create(data);
   const populated = await task.populate('assignedTo', 'name email');
   res.status(201).json(populated);
 });

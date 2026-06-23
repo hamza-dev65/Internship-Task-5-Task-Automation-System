@@ -6,6 +6,31 @@ const Reminder = require('../models/Reminder');
 const REMINDER_HOURS = 4;
 
 function startReminderJobs() {
+  // Every minute: activate scheduled tasks
+  cron.schedule('* * * * *', async () => {
+    const now = new Date();
+    const scheduled = await Task.find({
+      status: 'scheduled',
+      scheduledAt: { $lte: now },
+    });
+
+    for (const task of scheduled) {
+      task.status = 'pending';
+      task.scheduledAt = null;
+      await task.save();
+
+      await Reminder.create({
+        task: task._id,
+        intern: task.assignedTo,
+        message: `New task assigned: "${task.title}"`,
+      });
+    }
+
+    if (scheduled.length > 0) {
+      console.log(`[Cron] Activated ${scheduled.length} scheduled task(s).`);
+    }
+  });
+
   // Every 4 hours: send reminders for tasks due within 24h
   cron.schedule(`0 */${REMINDER_HOURS} * * *`, async () => {
     console.log(`[Cron] Checking for tasks due within 24 hours...`);

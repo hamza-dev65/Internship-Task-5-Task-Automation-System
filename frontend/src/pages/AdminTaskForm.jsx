@@ -6,6 +6,9 @@ export default function AdminTaskForm() {
   const navigate = useNavigate();
   const [interns, setInterns] = useState([]);
   const [form, setForm] = useState({ title: '', description: '', dueDate: '', priority: 'medium', assignedTo: '' });
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+  const [delayValue, setDelayValue] = useState(1);
+  const [delayUnit, setDelayUnit] = useState('minutes');
 
   useEffect(() => { getInterns().then(setInterns).catch(() => {}); }, []);
 
@@ -13,7 +16,14 @@ export default function AdminTaskForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createTask({ ...form, dueDate: new Date(form.dueDate) });
+    const payload = { ...form, dueDate: new Date(form.dueDate) };
+    if (scheduleEnabled && delayValue > 0) {
+      const ms = delayUnit === 'seconds' ? delayValue * 1000
+        : delayUnit === 'hours' ? delayValue * 3600000
+        : delayValue * 60000;
+      payload.scheduledAt = new Date(Date.now() + ms);
+    }
+    await createTask(payload);
     navigate('/admin/tasks');
   };
 
@@ -48,6 +58,35 @@ export default function AdminTaskForm() {
             {interns.map(i => <option key={i._id} value={i._id}>{i.name}</option>)}
           </select>
         </div>
+
+        <div className="border-t pt-4">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+            <input type="checkbox" checked={scheduleEnabled} onChange={e => setScheduleEnabled(e.target.checked)} className="rounded" />
+            Schedule delayed delivery
+          </label>
+          {scheduleEnabled && (
+            <div className="flex gap-2 items-end ml-6">
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Delay</label>
+                <input
+                  type="number" min="1"
+                  value={delayValue}
+                  onChange={e => setDelayValue(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs text-gray-500 mb-1">Unit</label>
+                <select value={delayUnit} onChange={e => setDelayUnit(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm">
+                  <option value="seconds">Seconds</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+
         <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
           Create Task
         </button>
