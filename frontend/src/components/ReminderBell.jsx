@@ -10,7 +10,7 @@ export default function ReminderBell() {
 
   const fetchReminders = async () => {
     try {
-      const data = await getReminders({ unread: false });
+      const data = await getReminders({ admin: true });
       setReminders(data);
     } catch { /* ignore */ }
   };

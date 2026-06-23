@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
 const Reminder = require('../models/Reminder');
+const Intern = require('../models/Intern');
 
 router.get('/', async (req, res) => {
   const filter = {};
@@ -18,6 +19,13 @@ router.post('/', async (req, res) => {
   }
   const task = await Task.create(data);
   const populated = await task.populate('assignedTo', 'name email');
+
+  await Reminder.create({
+    task: task._id,
+    intern: task.assignedTo,
+    message: `New task assigned: "${task.title}"`,
+  });
+
   res.status(201).json(populated);
 });
 
@@ -32,6 +40,16 @@ router.patch('/:id/status', async (req, res) => {
   if (status === 'completed') update.completedAt = new Date();
   if (status !== 'completed') update.completedAt = null;
   const task = await Task.findByIdAndUpdate(req.params.id, update, { new: true }).populate('assignedTo', 'name email');
+
+  if (status === 'completed') {
+    const intern = await Intern.findById(task.assignedTo);
+    await Reminder.create({
+      task: task._id,
+      isAdmin: true,
+      message: `${intern ? intern.name : 'An intern'} submitted task: "${task.title}"`,
+    });
+  }
+
   res.json(task);
 });
 
